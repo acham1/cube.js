@@ -4,6 +4,8 @@ import { Layout, Row, Col, Button, Icon } from 'antd';
 import logo from '../../pages/images/Logo.png';
 
 import styles from '../../../static/styles/index.module.scss';
+import { DocsSwitcher } from '../DocsSwitcher';
+import switchStyles from '../DocsSwitcher/styles.module.scss';
 
 const layout = {
   leftSidebar: {
@@ -39,19 +41,35 @@ type Props = {
   className?: string;
 };
 
-const Header: React.FC<Props> = (props) => (
+const Header: React.FC<Props> = (props) => {
+
+  const [isSmallSwitch, setIsSmallSwitch] = React.useState(false);
+
+  const onSwitchWrapperRef = React.useCallback((ref) => {
+    if (ref) {
+      setIsSmallSwitch(ref.getBoundingClientRect().width < 360);
+    }
+  }, []);
+
+  return (
   <Layout.Header className={props.className}>
     <div className={styles.searchDimmer}></div>
     <Row>
-      <Col {...layout.leftSidebar.width}>
-        <div className={styles.logoWrapper}>
-          <a href="/" className={styles.logo}>
-            <img src={logo} alt="Logo" style={{ height: 36 }} />
-          </a>
-          &nbsp;
-          <a href="/docs" className={styles.logo}>
-            <span className={styles.logoDocs}>docs</span>
-          </a>
+      <Col {...layout.leftSidebar.width} style={{ height: 'inherit' }}>
+        <div ref={onSwitchWrapperRef} className={switchStyles.docsSwitcherWrapper}>
+          <DocsSwitcher 
+            isSmall={isSmallSwitch} 
+            isCloud={true}
+            onCubeClick={() => {}}
+            onCloudClick={() => {}}
+          />
+          {/*<a href="/" className={styles.logo}>*/}
+          {/*  <img src={logo} alt="Logo" style={{ height: 36 }} />*/}
+          {/*</a>*/}
+          {/*&nbsp;*/}
+          {/*<a href="/docs" className={styles.logo}>*/}
+          {/*  <span className={styles.logoDocs}>docs</span>*/}
+          {/*</a>*/}
         </div>
       </Col>
       <Col {...layout.contentArea.width}>{props.children}</Col>
@@ -84,5 +102,6 @@ const Header: React.FC<Props> = (props) => (
     </Row>
   </Layout.Header>
 );
+  }
 
 export default Header;
